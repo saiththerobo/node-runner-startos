@@ -161,3 +161,31 @@ Grace period: 30 seconds.
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for build instructions, development workflow, and notes on the podman/docker shim.
+
+---
+
+## Quick Reference for AI Consumers
+
+```yaml
+package_id: node-runner
+image: node:20-alpine (custom build via Dockerfile)
+architectures: [x86_64, aarch64]
+volumes:
+  work: /app/work        # running app + node_modules (persistent)
+  startos: internal      # SDK state and store.json
+  filebrowser: /mnt/filebrowser  # read-only dependency mount
+ports:
+  ui: 3000
+dependencies:
+  filebrowser: { kind: exists, minVersion: ">=2.62.2:0" }
+startos_managed_env_vars:
+  PORT: "3000"
+  NODE_ENV: production
+actions:
+  set-app-path: configure which File Browser folder contains the app (triggers restart)
+oneshots:
+  copy-app: cleans /app/work, copies from FileBrowser or falls back to default placeholder
+  install-deps: runs npm install if package.json present
+entrypoint_priority: [npm start, index.js, server.js, app.js]
+default_placeholder: nodeinfo() page showing Node.js runtime info
+```
