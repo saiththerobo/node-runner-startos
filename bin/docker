@@ -1,0 +1,31 @@
+#!/bin/bash
+# Shim: translate `docker buildx build --output type=docker,dest=-` to podman
+
+if [ "${1}" = "buildx" ] && [ "${2}" = "build" ]; then
+  shift 2  # drop "buildx build"
+
+  # Strip --output / -o flags (we handle output ourselves)
+  FILTERED=()
+  SKIP_NEXT=false
+  for arg in "$@"; do
+    if $SKIP_NEXT; then
+      SKIP_NEXT=false
+      continue
+    fi
+    if [ "$arg" = "--output" ] || [ "$arg" = "-o" ]; then
+      SKIP_NEXT=true
+      continue
+    fi
+    if [[ "$arg" == --output=* ]] || [[ "$arg" == -o=* ]]; then
+      continue
+    fi
+    FILTERED+=("$arg")
+  done
+
+  TEMP_TAG="start9-node-runner-build-$$"
+  podman build -t "$TEMP_TAG" "${FILTERED[@]}" >&2 || exit 1
+  podman save "$TEMP_TAG"
+  podman rmi "$TEMP_TAG" >/dev/null 2>&1
+else
+  exec podman "$@"
+fi

@@ -1,0 +1,15 @@
+.git
+.gitmodules
+.github
+node_modules
+javascript
+*.s9pk
+startos
+bin
+assets
+*.md
+package.json
+package-lock.json
+tsconfig.json
+s9pk.mk
+Makefile
