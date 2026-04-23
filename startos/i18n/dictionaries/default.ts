@@ -28,11 +28,6 @@ const dict = {
   'Name': 17,
   'Value': 18,
   'Letters, digits, and underscores only; must not start with a digit.': 19,
-
-  // actions/viewEnvVars.ts
-  'View Environment Variables': 20,
-  'Show all environment variables currently set for your app': 21,
-  'No environment variables are set.': 22,
 } as const
 
 /**

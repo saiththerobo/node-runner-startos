@@ -22,9 +22,6 @@ export default {
     17: 'Nombre',
     18: 'Valor',
     19: 'Solo letras, dígitos y guiones bajos; no debe comenzar con un dígito.',
-    20: 'Ver variables de entorno',
-    21: 'Mostrar todas las variables de entorno actualmente configuradas para tu aplicación',
-    22: 'No hay variables de entorno configuradas.',
   },
   de_DE: {
     0: 'Node.js Runner wird gestartet!',
