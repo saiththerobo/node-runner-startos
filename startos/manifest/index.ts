@@ -5,7 +5,7 @@ export const manifest = setupManifest({
   id: 'node-runner',
   title: 'Node.js Runner',
   license: 'MIT',
-  packageRepo: 'https://github.com/Start9Labs/node-runner-startos',
+  packageRepo: 'https://github.com/saiththerobo/node-runner-startos',
   upstreamRepo: 'https://nodejs.org',
   marketingUrl: 'https://nodejs.org',
   donationUrl: null,
