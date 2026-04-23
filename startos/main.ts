@@ -7,8 +7,10 @@ import { uiPort } from './utils'
 export const main = sdk.setupMain(async ({ effects }) => {
   console.info(i18n('Starting Node.js Runner'))
 
-  // Read app folder path reactively — restarts service if user changes it
+  // Read config reactively — restarts service if user changes either value
   const appPath = (await store.read((s) => s.appPath).const(effects)) || ''
+  const envVars = (await store.read((s) => s.envVars).const(effects)) || []
+  const customEnv = Object.fromEntries(envVars.map(({ key, value }) => [key, value]))
   const cleanPath = appPath.trim().replace(/^\/+/, '').replace(/\/+$/, '')
   const src = cleanPath
     ? `/mnt/filebrowser/${cleanPath}`
@@ -70,8 +72,9 @@ export const main = sdk.setupMain(async ({ effects }) => {
       exec: {
         command: ['sh', '/entrypoint.sh'],
         env: {
-          PORT: String(uiPort),
           NODE_ENV: 'production',
+          ...customEnv,
+          PORT: String(uiPort), // always wins — app must listen on this port
         },
       },
       ready: {

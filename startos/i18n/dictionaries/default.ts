@@ -18,6 +18,16 @@ const dict = {
   'App Folder Path': 9,
   'Path within File Browser containing your Node.js app (e.g. "my-app"). Leave empty to use the File Browser root.': 10,
   'Set the File Browser folder that contains your Node.js app': 11,
+
+  // actions/setEnvVars.ts
+  'Set Environment Variables': 12,
+  'Configure environment variables passed to your Node.js app': 13,
+  'Changing environment variables will restart the service.': 14,
+  'Environment Variables': 15,
+  'Variables are injected into your app at startup. PORT is reserved and cannot be overridden.': 16,
+  'Name': 17,
+  'Value': 18,
+  'Letters, digits, and underscores only; must not start with a digit.': 19,
 } as const
 
 /**
