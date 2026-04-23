@@ -111,14 +111,7 @@ http.createServer((req, res) => {
       row('External', formatBytes(mem.external)),
     ])}
 
-    ${section('Environment', [
-      row('PORT', process.env.PORT || '(not set)'),
-      row('NODE_ENV', process.env.NODE_ENV || '(not set)'),
-      row('NODE_PATH', process.env.NODE_PATH || '(not set)'),
-      row('HOME', process.env.HOME || '(not set)'),
-      row('USER', process.env.USER || '(not set)'),
-      row('PATH', `<span style="word-break:break-all">${process.env.PATH || '(not set)'}</span>`),
-    ])}
+    ${section('Environment', Object.entries(process.env).sort(([a], [b]) => a.localeCompare(b)).map(([k, v]) => row(k, v)))}
 
     ${section('OS', [
       row('Hostname', os.hostname()),
