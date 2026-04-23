@@ -36,7 +36,7 @@ On every service start, three steps run in sequence:
 2. **install-deps** — runs `npm install` if a `package.json` is present
 3. **primary** — starts your app via `entrypoint.sh`
 
-Entry point priority: `npm start` → `index.js` → `server.js` → `app.js`
+Entry point priority: `$START_COMMAND` → `npm start` → `index.js` → `server.js` → `app.js`
 
 Your app must listen on `process.env.PORT` (always `3000`).
 
@@ -46,22 +46,24 @@ When you update your code, re-upload to File Browser and restart the service —
 
 ## Image and Container Runtime
 
-| Property      | Value                        |
-| ------------- | ---------------------------- |
-| Base image    | `node:20-alpine`             |
-| Architectures | x86\_64, aarch64             |
-| Command       | `sh /entrypoint.sh`          |
-| Internal port | `3000`                       |
+| Property      | Value                                  |
+| ------------- | -------------------------------------- |
+| Base images   | `node:18-alpine`, `node:20-alpine`, `node:22-alpine` |
+| Architectures | x86\_64, aarch64                       |
+| Command       | `sh /entrypoint.sh`                    |
+| Internal port | `3000`                                 |
+
+The Node.js version is selected via the **Set Node Version** action. Default is **Node 22**.
 
 ---
 
 ## Volume and Data Layout
 
-| Volume       | Mount Point        | Purpose                                      |
-| ------------ | ------------------ | -------------------------------------------- |
-| `work`       | `/app/work`        | Working copy of your app + `node_modules`    |
-| `startos`    | *(internal)*       | SDK state and `store.json`                   |
-| `filebrowser`| `/mnt/filebrowser` | Read-only mount of File Browser data volume  |
+| Volume        | Mount Point        | Purpose                                      |
+| ------------- | ------------------ | -------------------------------------------- |
+| `work`        | `/app/work`        | Working copy of your app + `node_modules`    |
+| `startos`     | *(internal)*       | SDK state and `store.json`                   |
+| `filebrowser` | `/mnt/filebrowser` | Read-only mount of File Browser data volume  |
 
 `node_modules` is preserved across restarts inside `work` — `npm install` only installs what changed.
 
@@ -71,7 +73,7 @@ When you update your code, re-upload to File Browser and restart the service —
 
 1. Install **File Browser** (required dependency)
 2. Install **Node.js Runner** — the `nodeinfo()` placeholder starts immediately
-3. A **Set App Path** task appears in the StartOS UI — complete it to point the runner at your app folder
+3. Use the **Set App Path** action to point the runner at your app folder
 
 ---
 
@@ -92,11 +94,14 @@ app.listen(port)
 
 ## Configuration Management
 
-| Setting    | Where           | Default              |
-| ---------- | --------------- | -------------------- |
-| `appPath`  | `store.json`    | `''` (FB root)       |
+| Setting        | Where        | Default        |
+| -------------- | ------------ | -------------- |
+| `appPath`      | `store.json` | `''` (FB root) |
+| `nodeVersion`  | `store.json` | `'22'`         |
+| `startCommand` | `store.json` | `''`           |
+| `envVars`      | `store.json` | `[]`           |
 
-`appPath` is read reactively — changing it via the action restarts the service automatically.
+All settings are read reactively — changing any of them via an action restarts the service automatically.
 
 ---
 
@@ -118,9 +123,14 @@ StartOS handles all TLS termination. Your app always receives plain HTTP.
 
 ## Actions (StartOS UI)
 
-| Action        | Status   | Description                                      |
-| ------------- | -------- | ------------------------------------------------ |
-| Set App Path  | Any      | Set which File Browser folder contains your app  |
+| Action            | Description                                              |
+| ----------------- | -------------------------------------------------------- |
+| Set App Path      | Set which File Browser folder contains your app          |
+| Set Node Version  | Choose Node.js runtime version (18, 20, or 22)           |
+| Set Start Command | Override the launch command (e.g. `node dist/server.js`) |
+| Set Env Vars      | Inject custom environment variables into your app        |
+
+All actions trigger a service restart.
 
 ---
 
@@ -134,26 +144,26 @@ StartOS handles all TLS termination. Your app always receives plain HTTP.
 
 ## Health Checks
 
-| Check       | Method               | Success                | Failure              |
-| ----------- | -------------------- | ---------------------- | -------------------- |
-| Node.js App | Port listening (3000)| "App is running"       | "App is not ready"   |
+| Check       | Method                | Success          | Failure                              |
+| ----------- | --------------------- | ---------------- | ------------------------------------ |
+| Node.js App | Port listening (3000) | "App is running" | "App is not ready — check logs for details" |
 
-Grace period: 30 seconds.
+Grace period: 5 seconds.
 
 ---
 
 ## Dependencies
 
-| Package      | Kind   | Min version  | Purpose                     |
-| ------------ | ------ | ------------ | --------------------------- |
-| File Browser | exists | `>=2.62.2:0` | Source of your app files    |
+| Package      | Kind   | Min version  | Purpose                  |
+| ------------ | ------ | ------------ | ------------------------ |
+| File Browser | exists | `>=2.62.2:0` | Source of your app files |
 
 ---
 
 ## Limitations
 
 1. **Manual restart required on deploy** — upload new code to File Browser, then restart the service
-2. **No process isolation** — your app runs as root inside the container; avoid untrusted code
+2. **No process isolation** — your app runs inside a container; avoid untrusted code
 3. **Single app per instance** — one Node.js process per Node.js Runner install
 
 ---
@@ -168,7 +178,10 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for build instructions, development workf
 
 ```yaml
 package_id: node-runner
-image: node:20-alpine (custom build via Dockerfile)
+images:
+  node-runner-18: node:18-alpine
+  node-runner-20: node:20-alpine
+  node-runner-22: node:22-alpine
 architectures: [x86_64, aarch64]
 volumes:
   work: /app/work        # running app + node_modules (persistent)
@@ -181,11 +194,16 @@ dependencies:
 startos_managed_env_vars:
   PORT: "3000"
   NODE_ENV: production
+  START_COMMAND: (optional, from store)
+  <user-defined>: (from envVars store array)
 actions:
   set-app-path: configure which File Browser folder contains the app (triggers restart)
+  set-node-version: choose Node.js runtime version 18/20/22 (triggers restart)
+  set-start-command: override launch command (triggers restart)
+  set-env-vars: inject custom env vars (triggers restart)
 oneshots:
   copy-app: cleans /app/work, copies from FileBrowser or falls back to default placeholder
   install-deps: runs npm install if package.json present
-entrypoint_priority: [npm start, index.js, server.js, app.js]
-default_placeholder: nodeinfo() page showing Node.js runtime info
+entrypoint_priority: [START_COMMAND, npm start, index.js, server.js, app.js]
+default_placeholder: nodeinfo() page showing Node.js runtime info and all env vars
 ```
