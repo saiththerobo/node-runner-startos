@@ -18,7 +18,7 @@ export const manifest = setupManifest({
       arch: ['x86_64', 'aarch64'],
     },
     'node-runner-20': {
-      source: { dockerBuild: {} },
+      source: { dockerBuild: { dockerfile: './Dockerfile.node20' } },
       arch: ['x86_64', 'aarch64'],
     },
     'node-runner-22': {
