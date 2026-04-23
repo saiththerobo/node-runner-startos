@@ -48,12 +48,12 @@ When you update your code, re-upload to File Browser and restart the service —
 
 | Property      | Value                                  |
 | ------------- | -------------------------------------- |
-| Base images   | `node:18-alpine`, `node:20-alpine`, `node:22-alpine` |
+| Base images   | `node:20-alpine`, `node:22-alpine`, `node:24-alpine` |
 | Architectures | x86\_64, aarch64                       |
 | Command       | `sh /entrypoint.sh`                    |
 | Internal port | `3000`                                 |
 
-The Node.js version is selected via the **Set Node Version** action. Default is **Node 22**.
+The Node.js version is selected via the **Set Node Version** action. Default is **Node 24**.
 
 ---
 
@@ -97,7 +97,7 @@ app.listen(port)
 | Setting        | Where        | Default        |
 | -------------- | ------------ | -------------- |
 | `appPath`      | `store.json` | `''` (FB root) |
-| `nodeVersion`  | `store.json` | `'22'`         |
+| `nodeVersion`  | `store.json` | `'24'`         |
 | `startCommand` | `store.json` | `''`           |
 | `envVars`      | `store.json` | `[]`           |
 
@@ -126,7 +126,7 @@ StartOS handles all TLS termination. Your app always receives plain HTTP.
 | Action            | Description                                              |
 | ----------------- | -------------------------------------------------------- |
 | Set App Path      | Set which File Browser folder contains your app          |
-| Set Node Version  | Choose Node.js runtime version (18, 20, or 22)           |
+| Set Node Version  | Choose Node.js runtime version (20, 22, or 24)           |
 | Set Start Command | Override the launch command (e.g. `node dist/server.js`) |
 | Set Env Vars      | Inject custom environment variables into your app        |
 
@@ -179,9 +179,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for build instructions, development workf
 ```yaml
 package_id: node-runner
 images:
-  node-runner-18: node:18-alpine
   node-runner-20: node:20-alpine
   node-runner-22: node:22-alpine
+  node-runner-24: node:24-alpine
 architectures: [x86_64, aarch64]
 volumes:
   work: /app/work        # running app + node_modules (persistent)
@@ -198,7 +198,7 @@ startos_managed_env_vars:
   <user-defined>: (from envVars store array)
 actions:
   set-app-path: configure which File Browser folder contains the app (triggers restart)
-  set-node-version: choose Node.js runtime version 18/20/22 (triggers restart)
+  set-node-version: choose Node.js runtime version 20/22/24 (triggers restart)
   set-start-command: override launch command (triggers restart)
   set-env-vars: inject custom env vars (triggers restart)
 oneshots:
