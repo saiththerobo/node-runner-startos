@@ -1,6 +1,6 @@
 ARCHES := x86 arm
-# Prepend local bin/ so our docker→podman shim is found first
-export PATH := $(CURDIR)/bin:$(PATH)
+# Prepend workspace bin/ so our docker→podman shim is found first
+export PATH := $(abspath $(CURDIR)/../bin):$(PATH)
 # overrides to s9pk.mk must precede the include statement
 include s9pk.mk
 
