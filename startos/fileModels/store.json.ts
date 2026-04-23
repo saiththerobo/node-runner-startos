@@ -7,6 +7,7 @@ const shape = z.object({
     .array(z.object({ key: z.string(), value: z.string() }))
     .catch([]),
   startCommand: z.string().catch(''),
+  nodeVersion: z.enum(['18', '20', '22']).catch('22'),
 })
 
 export const store = FileHelper.json(

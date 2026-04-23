@@ -1,0 +1,10 @@
+FROM node:22-alpine
+
+RUN mkdir -p /app/work /mnt/filebrowser /app/default
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+COPY default-app/index.js /app/default/index.js
+
+WORKDIR /app/work

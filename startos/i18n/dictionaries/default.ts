@@ -35,6 +35,13 @@ const dict = {
   'Changing the start command will restart the service.': 22,
   'Start Command': 23,
   'Command used to launch your app. Leave empty to auto-detect (npm start → index.js → server.js → app.js).': 24,
+
+  // actions/setNodeVersion.ts
+  'Set Node.js Version': 25,
+  'Choose which Node.js version to run your app with': 26,
+  'Changing the Node.js version will restart the service.': 27,
+  'Node.js Version': 28,
+  'The Node.js runtime version for your app. npm install will run with the selected version.': 29,
 } as const
 
 /**
