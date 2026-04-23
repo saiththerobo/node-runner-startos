@@ -5,4 +5,4 @@ export PATH := $(CURDIR)/bin:$(PATH)
 include s9pk.mk
 
 # Track docker build sources so make rebuilds when they change
-node-runner_%.s9pk: entrypoint.sh default-app/index.js
+node-runner_%.s9pk: entrypoint.sh default-app/index.js Dockerfile.node18 Dockerfile.node20 Dockerfile.node22
