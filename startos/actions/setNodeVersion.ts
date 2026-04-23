@@ -10,11 +10,11 @@ const inputSpec = InputSpec.of({
     description: i18n(
       'The Node.js runtime version for your app. npm install will run with the selected version.',
     ),
-    default: '22',
+    default: '24',
     values: {
-      '18': 'Node.js 18 (Hydrogen LTS)',
       '20': 'Node.js 20 (Iron LTS)',
       '22': 'Node.js 22 (Jod LTS)',
+      '24': 'Node.js 24 (LTS)',
     },
   }),
 })
@@ -34,7 +34,7 @@ export const setNodeVersion = sdk.Action.withInput(
   inputSpec,
 
   async ({ effects }) => ({
-    nodeVersion: (await store.read((s) => s.nodeVersion).once()) ?? '20',
+    nodeVersion: (await store.read((s) => s.nodeVersion).once()) ?? '24',
   }),
 
   async ({ effects, input }) =>

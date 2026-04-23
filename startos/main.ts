@@ -11,13 +11,13 @@ export const main = sdk.setupMain(async ({ effects }) => {
   const appPath = (await store.read((s) => s.appPath).const(effects)) || ''
   const envVars = (await store.read((s) => s.envVars).const(effects)) || []
   const startCommand = (await store.read((s) => s.startCommand).const(effects)) || ''
-  const nodeVersion = (await store.read((s) => s.nodeVersion).const(effects)) || '22'
+  const nodeVersion = (await store.read((s) => s.nodeVersion).const(effects)) || '24'
   const imageId =
-    nodeVersion === '18'
-      ? ('node-runner-18' as const)
+    nodeVersion === '20'
+      ? ('node-runner-20' as const)
       : nodeVersion === '22'
         ? ('node-runner-22' as const)
-        : ('node-runner-20' as const)
+        : ('node-runner-24' as const)
   const customEnv = Object.fromEntries(envVars.map(({ key, value }) => [key, value]))
   const cleanPath = appPath.trim().replace(/^\/+/, '').replace(/\/+$/, '')
   const src = cleanPath

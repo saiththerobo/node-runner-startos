@@ -13,16 +13,16 @@ export const manifest = setupManifest({
   description: { short, long },
   volumes: ['startos', 'work'],
   images: {
-    'node-runner-18': {
-      source: { dockerBuild: { dockerfile: './Dockerfile.node18' } },
-      arch: ['x86_64', 'aarch64'],
-    },
     'node-runner-20': {
       source: { dockerBuild: { dockerfile: './Dockerfile.node20' } },
       arch: ['x86_64', 'aarch64'],
     },
     'node-runner-22': {
       source: { dockerBuild: { dockerfile: './Dockerfile.node22' } },
+      arch: ['x86_64', 'aarch64'],
+    },
+    'node-runner-24': {
+      source: { dockerBuild: { dockerfile: './Dockerfile.node24' } },
       arch: ['x86_64', 'aarch64'],
     },
   },
