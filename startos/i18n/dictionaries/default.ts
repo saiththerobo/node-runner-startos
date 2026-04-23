@@ -5,7 +5,7 @@ const dict = {
   'Starting Node.js Runner': 0,
   'Node.js App': 1,
   'App is running': 2,
-  'App is not ready': 3,
+  'App is not ready — check logs for details': 3,
 
   // interfaces.ts
   'Web UI': 4,
@@ -28,6 +28,13 @@ const dict = {
   'Name': 17,
   'Value': 18,
   'Letters, digits, and underscores only; must not start with a digit.': 19,
+
+  // actions/setStartCommand.ts
+  'Set Start Command': 20,
+  'Override the command used to launch your Node.js app': 21,
+  'Changing the start command will restart the service.': 22,
+  'Start Command': 23,
+  'Command used to launch your app. Leave empty to auto-detect (npm start → index.js → server.js → app.js).': 24,
 } as const
 
 /**

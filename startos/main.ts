@@ -7,9 +7,10 @@ import { uiPort } from './utils'
 export const main = sdk.setupMain(async ({ effects }) => {
   console.info(i18n('Starting Node.js Runner'))
 
-  // Read config reactively — restarts service if user changes either value
+  // Read config reactively — restarts service if user changes any value
   const appPath = (await store.read((s) => s.appPath).const(effects)) || ''
   const envVars = (await store.read((s) => s.envVars).const(effects)) || []
+  const startCommand = (await store.read((s) => s.startCommand).const(effects)) || ''
   const customEnv = Object.fromEntries(envVars.map(({ key, value }) => [key, value]))
   const cleanPath = appPath.trim().replace(/^\/+/, '').replace(/\/+$/, '')
   const src = cleanPath
@@ -75,15 +76,16 @@ export const main = sdk.setupMain(async ({ effects }) => {
           NODE_ENV: 'production',
           ...customEnv,
           PORT: String(uiPort), // always wins — app must listen on this port
+          ...(startCommand ? { START_COMMAND: startCommand } : {}),
         },
       },
       ready: {
         display: i18n('Node.js App'),
-        gracePeriod: 30_000,
+        gracePeriod: 5_000,
         fn: () =>
           sdk.healthCheck.checkPortListening(effects, uiPort, {
             successMessage: i18n('App is running'),
-            errorMessage: i18n('App is not ready'),
+            errorMessage: i18n('App is not ready — check logs for details'),
           }),
       },
       requires: ['install-deps'],

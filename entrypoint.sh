@@ -2,6 +2,10 @@
 set -e
 cd /app/work
 
+if [ -n "$START_COMMAND" ]; then
+  exec sh -c "$START_COMMAND"
+fi
+
 if [ -f package.json ]; then
   if node -e "const p=require('./package.json');process.exit(p.scripts&&p.scripts.start?0:1)" 2>/dev/null; then
     exec npm start
